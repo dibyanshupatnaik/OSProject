@@ -1,0 +1,104 @@
+#include <iostream>
+
+#include <thread>
+
+#include<windows.h>
+#include<time.h>
+#include<stdlib.h>
+
+using namespace std;
+
+int a,b,c,d;
+
+//This is the function that will run in parallel
+
+// It will be passed to the thread
+
+void thread_method() {
+
+    this_thread::sleep_for(std::chrono::milliseconds(500));
+
+	cout << "Function running in thread 1";
+
+    a=GetTickCount()%10;
+
+    cout<<a;
+    
+    
+
+	//std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+}
+
+void thread_method2() {
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(250));
+
+	cout << "Function running in thread 2";
+
+	b=GetTickCount()%10;
+
+	cout<<b;
+
+}
+
+void thread_method3() {
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(700));
+
+	cout << "Function running in thread 3";
+
+    c=GetTickCount()%10;
+
+    cout<<c;
+
+}
+
+int main() {
+
+	//This statement will launch thread in parallel to main function
+
+	thread t(thread_method);
+
+	thread t2(thread_method2);
+
+	thread t3(thread_method3);
+	public  int queue1[100],queue2[100],queue3[100],queue4[100];
+    	int front=rear=-1;
+
+	 
+	 
+	 public enqueue(int q[],int size)
+	 {
+	 
+	 	for(int i=0;i<size;i++)
+	 	{
+	 		srand(time(NULL))
+	 		q[i]=rand()%10 +1;
+		}
+		while(--size>0)
+	 	{		
+			if(rear==-1)
+		 	{
+		 		rear=rear+1;
+			 }
+		}
+	 }
+
+
+	//std::this_thread::sleep_for(std::chrono::milliseconds(200));
+
+	cout << "The main function execution\n";
+
+	cout<<GetTickCount()%10;
+
+	//This is how we join the new thread with main
+
+	//t.join();
+	
+
+	getchar();
+
+	return 0;
+
+}
