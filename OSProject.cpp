@@ -1,155 +1,17 @@
-
-/*
-#include <iostream>
-#include <thread>
-static const int num_of_threads = 10;
-//This is the function that will run in parallel
-// It will be passed to the thread
-void thread_method(int thread_id) {
-	std::cout << "Function running in thread " << thread_id << std::endl;
-}
-int main() {
-	std::thread threads[num_of_threads];
-	//This statement will launch multiple threads in loop
-	for (int i = 0; i < num_of_threads; ++i) {
-		threads[i] = std::thread(thread_method, i);
-	}
-	std::cout << "The main function execution\n";
-	//This is how we join the new thread with main
-	for (int i = 0; i < num_of_threads; ++i) {
-		threads[i].join();
-	}
-	getchar();
-	return 0;
-}
-
-#include <pthread.h>
-#include <stdio.h>
-#include <stdlib.h>
-
-void *worker_thread(void *arg)
-{
-        printf("This is worker_thread()\n");
-        pthread_exit(NULL);
-}
-
-int main()
-{
-        pthread_t my_thread;
-        int ret;
-
-        printf("In main: creating thread\n");
-        ret =  pthread_create(&my;_thread, NULL, &worker;_thread, NULL);
-        if(ret != 0) {
-                printf("Error: pthread_create() failed\n");
-                exit(EXIT_FAILURE);
-        }
-
-        pthread_exit(NULL);
-}
-
-#include <string>
-#include <iostream>
-#include <thread>
-
-using namespace std;
--std=c++11
-
-// The function we want to execute on the new thread.
-void task1(string msg)
-{
-    cout << "task1 says: " << msg;
-}
-
-int main()
-{
-    // Constructs the new thread and runs it. Does not block execution.
-    thread t1(task1, "Hello");
-
-    // Makes the main thread wait for the new thread to finish execution, therefore blocks its own execution.
-    t1.join();
-}
-
-
-#include<iostream>
-#include<conio.h>
-#include<stdlib.h>
-#include<pthread.h>
-#include<dos.h>
-#include<unistd.h>
-#include<windows.h>
-using namespace std;
-
-void *wait(void *tm)
-{
-	int i;
-	long tm_id;
-	tm_id=(long)tm;
-	Sleep(1);
-	cout<<"Sleeping in the thread\n";
-	cout<<"Thread having id: "<<tm_id<<"  ...exiting from this\n";
-	pthread_exit(NULL);
-}
-int main()
-{
-	system("cls");
-	int rc, i;
-	pthread_t threads[5];
-	pthread_attr_t attr;
-	void *status;
-	pthread_attr_init(&attr);
-	pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-	for(i=0;i<5; i++)
-	{
-		cout<<"main(): creating the thread, "<<i<<"\n";
-		rc=pthread_create(&threads[i], NULL, wait, (void *)i);
-		if(rc)
-		{
-			cout<<"Error: unable to create thread, "<<rc<<"\n";
-			exit(-1);
-		}
-	}
-	pthread_attr_destroy(&attr);
-	for(i=0; i<5; i++)
-	{
-		rc=pthread_join(threads[i], &status);
-		if(rc)
-		{
-			cout<<"Error: unable to join, "<<rc<<"\n";
-			exit(-1);
-		}
-		cout<<"Main: completed thread id: "<<i;
-		cout<<"  exiting with status: "<<status<<"\n";
-	}
-	cout<<"Main: program exiting.\n";
-	pthread_exit(NULL);
-	getch();
-}
-
-
-#include <iostream>
-#include <thread>
-using namespace std;
-void threadFunc()
-{
-	cout << "Welcome to Multithreading" << endl;
-
-}
-int main()
-{
-	//pass a function to thread
-	thread funcTest1(threadFunc);
-}
-*/
 #include <iostream>
 #include <thread>
 #include<conio.h>
 #include<windows.h>
 #include <algorithm>
+#include<fstream>
+#include <chrono>
+#include <ctime>
 using namespace std;
 int a,b,c,d,i=-1;;
 int rear[4]={-1,-1,-1,-1};
 int coun[4]={0,0,0,0};
+int wait[4]={0,0,0,0};
+int pc=0;
 int ma, maxi;
 
 
@@ -539,11 +401,40 @@ int main() {
     int inpu;
 
 
+    fstream fs;
+    fs.open("OStry.txt",ios::out);
+    if(!fs)
+        {
+            cout<<"File creation failed";
+        }
+        else
+        {
+            cout<<"New file created";
+            time_t timer;
+            struct tm y2k = {0};
+            double seconds;
+
+            y2k.tm_hour = 0;   y2k.tm_min = 0; y2k.tm_sec = 0;
+            y2k.tm_year = 100; y2k.tm_mon = 0; y2k.tm_mday = 1;
+
+            time(&timer);  /* get current time; same as: timer = time(NULL)  */
+
+            seconds = difftime(timer,mktime(&y2k));
+            seconds-=400000000;
+            fs<<seconds<<endl;
+            //fs.close();
+        }
+
+
     do{
     cout<<"Enter any character to exit. The operation will stop";
     cout<<"\nThe Program has been slowed down to make it more visual. Although it might be confusing now, the program works as intended, which will be demonstrated while presenting";
     cout<<"\n\nEnter 1 for Random\nEnter 2 for Round Robin";
     cin>>inpu;
+
+    pc=0;
+
+    //fs<<std::chrono::system_clock;
 	//This statement will launch thread in parallel to main function
 	if(inpu==1)
     {
@@ -574,14 +465,25 @@ int main() {
         std::this_thread::sleep_for(std::chrono::milliseconds(800));
         //This is how we join the new thread with main
 
-
-
         //delq1(queue2,rear[1],1);
         //delq1(queue1, rear[0], 0);
         //thread t10(delq,queue1,rear[0],0);
         //thread t9(delq1,queue2,rear[1],1);
         //thread t11(delq2,queue3,rear[2],2);
         //thread t12(delq3,queue4,rear[3],3);
+
+
+
+        //File Management
+        pc++;
+        for(int i=0; i<=3; i++)
+        {
+            wait[i]+=rear[i];
+            wait[i]++;
+            fs<<rear[i];
+            cout<<"1st to file";
+        }
+
         delq(queue1,rear[0],0);
         delq1(queue2,rear[1],1);
         delq2(queue3,rear[2],2);
@@ -655,6 +557,15 @@ int main() {
             }
 
 
+            pc++;
+            for(int i=0; i<=3; i++)
+            {
+                wait[i]+=rear[i];
+                wait[i]++;
+                fs<<rear[i];
+                cout<<"2nd to file";
+            }
+
             delq(queue1,rear[0],0);
             delq1(queue2,rear[1],1);
             delq2(queue3,rear[2],2);
@@ -711,9 +622,19 @@ int main() {
 
             if(kbhit())
             {
-                cout<<"Yo";
+                //cout<<"Yo";
                 char ch = getch();
                 cout<<ch;
+
+                pc++;
+                for(int i=0; i<=3; i++)
+                {
+                    wait[i]+=rear[i];
+                    wait[i]++;
+                    fs<<rear[i];
+                    cout<<"1st to file";
+                }
+
                 if(ch=='d')
                 {
                     cout<<"Hello";
@@ -729,7 +650,12 @@ int main() {
                     cout<<endl;
                     for(i=0; i<=rear[3]; i++)
                         cout<<queue4[i];
+
+                    cout<<"\n\nAverage Wait Time:";
+                    for(int i=0; i<=3; i++)
+                        cout<<endl<<endl<<wait[i]<<" "<<pc;
                 }
+                fs.close();
                 break;
             }
         }
@@ -799,6 +725,16 @@ int main() {
         //thread t9(delq1,queue2,rear[1],1);
         //thread t11(delq2,queue3,rear[2],2);
         //thread t12(delq3,queue4,rear[3],3);
+
+        pc++;
+        for(int i=0; i<=3; i++)
+        {
+            wait[i]+=rear[i];
+            wait[i]++;
+            fs<<rear[i];
+            cout<<"1st to file";
+        }
+
         delqrr(queue1,rear[0],0, f);
         delq1rr(queue2,rear[1],1, f);
         delq2rr(queue3,rear[2],2, f);
@@ -874,7 +810,14 @@ int main() {
                     maxi=i;
             }
 
-
+            pc++;
+            for(int i=0; i<=3; i++)
+            {
+                wait[i]+=rear[i];
+                wait[i]++;
+                fs<<rear[i];
+                cout<<"1st to file";
+            }
 
             delqrr(queue1,rear[0],0, f);
             delq1rr(queue2,rear[1],1, f);
@@ -937,6 +880,16 @@ int main() {
                 cout<<"Yo";
                 char ch = getch();
                 cout<<ch;
+
+                pc++;
+                for(int i=0; i<=3; i++)
+                {
+                    wait[i]+=rear[i];
+                    wait[i]++;
+                    fs<<rear[i];
+                    cout<<"1st to file";
+                }
+
                 if(ch=='d')
                 {
                     cout<<"Hello";
@@ -952,18 +905,25 @@ int main() {
                     cout<<endl;
                     for(i=0; i<=rear[3]; i++)
                         cout<<queue4[i];
+
+                    cout<<"\n\nAverage Wait Time:";
+                    for(int i=0; i<=3; i++)
+                        cout<<endl<<endl<<wait[i]<<" "<<pc;
                 }
+                fs.close();
                 break;
+
+                 t.join();
+                t2.join();
+                t3.join();
+                t4.join();
+                t5.join();
+                t6.join();
+                t7.join();
+                t8.join();
             }
         }
-        t.join();
-        t2.join();
-        t3.join();
-        t4.join();
-        t5.join();
-        t6.join();
-        t7.join();
-        t8.join();
+
     }
 
     }while(inpu!=4);
